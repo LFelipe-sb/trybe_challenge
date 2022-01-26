@@ -5,7 +5,7 @@
   "username": "postgres",
   "password": "postgres",
   "database": "trybe_challenge",
-  "entities": ["src/app/entity/*.ts"],
+  "entities": ["src/app/entities/*.ts"],
   "migrationsTableName": "custom_migration_table",
   "migrations": ["src/database/migrations/*.ts"],
   "cli": {
