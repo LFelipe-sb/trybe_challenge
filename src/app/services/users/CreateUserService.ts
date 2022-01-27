@@ -13,7 +13,7 @@ export class CreateUserService {
     const repo = getRepository(User);
     
     if(await repo.findOne({email}))
-      return new Error('Email existente na base');
+      return new Error('Usuário já existe');
     
     const user = repo.create({
       displayName,
