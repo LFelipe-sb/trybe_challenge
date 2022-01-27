@@ -6,10 +6,12 @@ import { ListUserController } from './app/controllers/users/ListUserController';
 import { userValidate } from './app/middlewares/validations/validateUsers';
 import { loginValidate } from './app/middlewares/validations/validateLogin';
 import { ensureAuthenticated } from './app/middlewares/authentication/ensureAuthenticated';
+import { DeleteUserController } from './app/controllers/users/DeleteUserController';
 
 export const routes = Router();
 
 routes.post('/user', userValidate, new CreateUserController().handle);
 routes.post('/login', loginValidate, new accessLoginController().handle);
-routes.get('/user', ensureAuthenticated , new ListUserController().handle);
-routes.get('/user/:id', ensureAuthenticated , new ListUserController().handle);
+routes.get('/user', ensureAuthenticated, new ListUserController().handle);
+routes.get('/user/:id', ensureAuthenticated, new ListUserController().handle);
+routes.delete('/user/me', ensureAuthenticated, new DeleteUserController().handle);
