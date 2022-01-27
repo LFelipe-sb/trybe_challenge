@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
 
 interface IPayload {
-  sub: string;
+  user: any;
 }
 
 export function ensureAuthenticated(request: Request, response: Response, next: NextFunction) {
@@ -11,21 +11,17 @@ export function ensureAuthenticated(request: Request, response: Response, next: 
   if(!authToken) 
     return response.status(401).json({error: 'Token não encontrado'});
 
-  const [_type, jwt] = authToken.split(' ');
-
-  let token;
-
-  authToken.includes('Bearer') ? token = jwt : token = authToken;
+  const token = authToken.replace('Bearer', '').trim();
 
   try {
 
     const secret = process.env.JWTSECRET || 'LuisFelipeTrybe@';
-    const { sub } = verify(token, secret) as IPayload;
-    request.userId = sub;
+    const { user } = verify(token, secret) as IPayload;
+    request.id = user.id;
     
     return next();
 
   } catch(err) {
-    return response.status(401).json({error: 'Token expiredo ou inválido'});
+    return response.status(401).json({error: 'Token expirado ou inválido'});
   }
 }
