@@ -9,9 +9,13 @@ export function ensureAuthenticated(request: Request, response: Response, next: 
   const authToken = request.headers.authorization;
 
   if(!authToken) 
-    return response.status(401).json({error: 'Token.invalid'});
+    return response.status(401).json({error: 'Token não encontrado'});
 
-  const [_type, token] = authToken.split(' ');
+  const [_type, jwt] = authToken.split(' ');
+
+  let token;
+
+  authToken.includes('Bearer') ? token = jwt : token = authToken;
 
   try {
 
@@ -22,6 +26,6 @@ export function ensureAuthenticated(request: Request, response: Response, next: 
     return next();
 
   } catch(err) {
-    return response.status(401).json({error: 'token.expired'});
+    return response.status(401).json({error: 'Token expiredo ou inválido'});
   }
 }
