@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { CreateUserService } from '../../services/users/CreateUserService';
-import { generatedJWT } from '../../helpers/JwtGeneretedToken';
+import { generatedJWT } from '../../helpers/jwtGeneretedToken';
 
 export class CreateUserController {
   async handle(request: Request, response: Response) {
@@ -22,7 +22,11 @@ export class CreateUserController {
       return response.status(409).json({message: result.message});
     }
 
-    const token = generatedJWT(displayName, email);
+    const token = generatedJWT({
+      id: result.id,
+      displayName,
+      email,
+    });
 
     return response.status(201).json({token});
   }
