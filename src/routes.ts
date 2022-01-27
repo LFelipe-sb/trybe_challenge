@@ -12,3 +12,4 @@ export const routes = Router();
 routes.post('/user', userValidate, new CreateUserController().handle);
 routes.post('/login', loginValidate, new accessLoginController().handle);
 routes.get('/user', ensureAuthenticated , new ListUserController().handle);
+routes.get('/user/:id', ensureAuthenticated , new ListUserController().handle);
