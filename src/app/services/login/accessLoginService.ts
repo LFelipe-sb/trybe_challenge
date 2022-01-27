@@ -2,11 +2,11 @@ import { getRepository } from "typeorm";
 import { User } from "../../entities/User";
 
 export class ListUserService {
-  async execute() {
+  async execute(email: string, password: string) {
     const repo = getRepository(User);
 
-    const users = await repo.find();
+    const user = await repo.findOne({email, password});
 
-    return users;
+    return user;
   }
 }
