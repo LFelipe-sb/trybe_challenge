@@ -6,7 +6,15 @@ export class ListUserController {
 
     const service = new ListUserService();
     const users = await service.execute();
-    return response.status(200).json({message: users});
+
+    const noId = ({password, ...rest} : any) => rest;
+    const user = users.map((item) => {
+      return {
+        ...noId(item)
+      }
+    });
+
+    return response.status(200).json(user);
 
   };
 
