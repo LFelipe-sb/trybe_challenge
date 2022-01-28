@@ -11,6 +11,7 @@ import { DeleteUserController } from './app/controllers/users/DeleteUserControll
 import { CreatePostController } from './app/controllers/posts/CreatePostController';
 import { ListPostController } from './app/controllers/posts/ListPostController';
 import { UpdatePostController } from './app/controllers/posts/UpdatePostController';
+import { SearchPostController } from './app/controllers/posts/SearchPostController';
 
 export const routes = Router();
 
@@ -18,6 +19,7 @@ routes.post('/user', userValidate, new CreateUserController().handle);
 routes.post('/login', loginValidate, new AccessLoginController().handle);
 routes.post('/post', ensureAuthenticated, postValidate, new CreatePostController().handle);
 routes.get('/post', ensureAuthenticated, new ListPostController().handle);
+routes.get('/post/search', ensureAuthenticated, new SearchPostController().handle);
 routes.get('/post/:id', ensureAuthenticated, new ListPostController().handle);
 routes.get('/user', ensureAuthenticated, new ListUserController().handle);
 routes.get('/user/:id', ensureAuthenticated, new ListUserController().handle);
