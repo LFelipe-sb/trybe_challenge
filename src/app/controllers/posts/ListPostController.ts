@@ -17,9 +17,8 @@ export class ListPostController {
 
       return response.status(200).json(result);
     } catch(err) {
-      return response.status(404).json({message: 'PostBlog não existe'});
+      return response.status(404).json({message: 'Post não existe'});
     }
 
   };
-
 }

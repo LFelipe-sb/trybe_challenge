@@ -5,10 +5,17 @@ export class ListPostService {
   async execute(id?: string) {
     const repo = getRepository(Posts);
 
-      const posts = await repo.find({
-          relations: ['user'],
-        });
-        
+    let posts; 
+
+    id ?
+      posts = await repo.find({
+        where: {id},
+        relations: ['user'],
+      }) :
+      posts = await repo.find({
+        relations: ['user'],
+      });
+
     return posts;
   }
 }

@@ -17,6 +17,7 @@ routes.post('/user', userValidate, new CreateUserController().handle);
 routes.post('/login', loginValidate, new AccessLoginController().handle);
 routes.post('/post', ensureAuthenticated, postValidate, new CreatePostController().handle);
 routes.get('/post', ensureAuthenticated, new ListPostController().handle);
+routes.get('/post/:id', ensureAuthenticated, new ListPostController().handle);
 routes.get('/user', ensureAuthenticated, new ListUserController().handle);
 routes.get('/user/:id', ensureAuthenticated, new ListUserController().handle);
 routes.delete('/user/me', ensureAuthenticated, new DeleteUserController().handle);
