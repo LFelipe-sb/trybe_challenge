@@ -10,6 +10,7 @@ import { ensureAuthenticated } from './app/middlewares/authentication/ensureAuth
 import { DeleteUserController } from './app/controllers/users/DeleteUserController';
 import { CreatePostController } from './app/controllers/posts/CreatePostController';
 import { ListPostController } from './app/controllers/posts/ListPostController';
+import { UpdatePostController } from './app/controllers/posts/UpdatePostController';
 
 export const routes = Router();
 
@@ -20,4 +21,5 @@ routes.get('/post', ensureAuthenticated, new ListPostController().handle);
 routes.get('/post/:id', ensureAuthenticated, new ListPostController().handle);
 routes.get('/user', ensureAuthenticated, new ListUserController().handle);
 routes.get('/user/:id', ensureAuthenticated, new ListUserController().handle);
+routes.put('/post/:id', ensureAuthenticated, postValidate, new UpdatePostController().handle);
 routes.delete('/user/me', ensureAuthenticated, new DeleteUserController().handle);
