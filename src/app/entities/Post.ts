@@ -16,7 +16,7 @@ export class Posts {
   userId: string
   
   @ManyToOne(() => User)
-  @JoinColumn({name: 'id'})
+  @JoinColumn({name: 'userId'})
   user: User;
   
   @CreateDateColumn()

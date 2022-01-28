@@ -9,12 +9,14 @@ import { loginValidate } from './app/middlewares/validations/validateLogin';
 import { ensureAuthenticated } from './app/middlewares/authentication/ensureAuthenticated';
 import { DeleteUserController } from './app/controllers/users/DeleteUserController';
 import { CreatePostController } from './app/controllers/posts/CreatePostController';
+import { ListPostController } from './app/controllers/posts/ListPostController';
 
 export const routes = Router();
 
 routes.post('/user', userValidate, new CreateUserController().handle);
 routes.post('/login', loginValidate, new AccessLoginController().handle);
 routes.post('/post', ensureAuthenticated, postValidate, new CreatePostController().handle);
+routes.get('/post', ensureAuthenticated, new ListPostController().handle);
 routes.get('/user', ensureAuthenticated, new ListUserController().handle);
 routes.get('/user/:id', ensureAuthenticated, new ListUserController().handle);
 routes.delete('/user/me', ensureAuthenticated, new DeleteUserController().handle);
