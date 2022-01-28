@@ -1,7 +1,7 @@
 import { getRepository } from "typeorm";
 import { User } from "../../entities/User";
 
-export class ListUserService {
+export class AccessLoginService {
   async execute(email: string, password: string) {
     const repo = getRepository(User);
 

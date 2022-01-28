@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { ListUserService } from '../../services/login/accessLoginService';
+import { AccessLoginService } from '../../services/login/AccessLoginService';
 import { generatedJWT } from '../../helpers/jwtGeneretedToken';
 
 export class AccessLoginController {
@@ -13,7 +13,7 @@ export class AccessLoginController {
       return response.status(400).send({message: error.msg})
     }
 
-    const service = new ListUserService();
+    const service = new AccessLoginService();
 
     const {email, password} = request.body;
     const result = await service.execute(email, password);
