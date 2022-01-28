@@ -13,15 +13,15 @@ export class Posts {
   content: string;
 
   @Column()
-  user: string
+  userId: string
   
   @ManyToOne(() => User)
   @JoinColumn({name: 'id'})
-  userId: User;
+  user: User;
   
   @CreateDateColumn()
   published: Date
 
   @CreateDateColumn()
-  uptaded: Date
+  updated: Date
 }

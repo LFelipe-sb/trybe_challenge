@@ -31,7 +31,7 @@ export class createPostsTable1643180704738 implements MigrationInterface {
                 default: 'now()'
             },
             {
-                name: 'uptaded',
+                name: 'updated',
                 type: 'timestamp',
                 default: 'now()'
             },
