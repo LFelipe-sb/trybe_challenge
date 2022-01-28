@@ -3,7 +3,7 @@ import { validationResult } from 'express-validator';
 import { ListUserService } from '../../services/login/accessLoginService';
 import { generatedJWT } from '../../helpers/jwtGeneretedToken';
 
-export class accessLoginController {
+export class AccessLoginController {
   async handle(request: Request, response: Response) {
 
     const errors = validationResult(request);
