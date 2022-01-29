@@ -12,6 +12,7 @@ import { CreatePostController } from './app/controllers/posts/CreatePostControll
 import { ListPostController } from './app/controllers/posts/ListPostController';
 import { UpdatePostController } from './app/controllers/posts/UpdatePostController';
 import { SearchPostController } from './app/controllers/posts/SearchPostController';
+import { DeletePostController } from './app/controllers/posts/DeletePostController';
 
 export const routes = Router();
 
@@ -25,3 +26,4 @@ routes.get('/user', ensureAuthenticated, new ListUserController().handle);
 routes.get('/user/:id', ensureAuthenticated, new ListUserController().handle);
 routes.put('/post/:id', ensureAuthenticated, postValidate, new UpdatePostController().handle);
 routes.delete('/user/me', ensureAuthenticated, new DeleteUserController().handle);
+routes.delete('/post/:id', ensureAuthenticated, new DeletePostController().handle);
