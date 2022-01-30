@@ -16,7 +16,9 @@ import {
   inputAuthenticate,
 } from '../mock';
 
-describe('USER - POST: /user', () => {
+let tokenJWT: string;
+
+describe('Validation endpoints', () => {
 
   beforeAll( async () => {
     const connection = await createConnection();
@@ -72,6 +74,7 @@ describe('USER - POST: /user', () => {
 
   it('LOGIN AUTHENTICATE - should be able to login application', async () => {
     const response = await request(app).post('/login').send(inputAuthenticate);
+    tokenJWT = response.body.token;
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('token');
   });
@@ -104,6 +107,34 @@ describe('USER - POST: /user', () => {
     const response = await request(app).post('/login').send(userNotExist);
     expect(response.statusCode).toBe(400);
     expect(response.body.message).toEqual('Campos inválidos');
+  });
+
+  it('LIST USER - should be return statusCode 200 and list user if tokenJWT is valid', async () => {
+    const response = await request(app).get('/user').send() 
+      .set('Authorization', tokenJWT);
+
+    expect(response.statusCode).toBe(200);
+    response.body.forEach((item: any) => {
+      expect(item).toHaveProperty('displayName');
+      expect(item).toHaveProperty('email');
+      expect(item).toHaveProperty('id');
+      expect(item).toHaveProperty('image');
+      expect(item).not.toHaveProperty('password');
+    });
+  });
+
+  it('LIST USER - should be return statusCode 401 if tokenJWT not exists', async () => {
+    const response = await request(app).get('/user').send()
+      .set('Authorization', '');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token não encontrado');
+  });
+
+  it('LIST USER - should be return statusCode 401 if tokenJWT is invalid', async () => {
+    const response = await request(app).get('/user').send()
+      .set('Authorization', 'qwerty');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token expirado ou inválido');
   });
 
   afterAll(async () => {

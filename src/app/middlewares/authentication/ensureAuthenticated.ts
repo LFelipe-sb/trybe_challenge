@@ -9,7 +9,7 @@ export function ensureAuthenticated(request: Request, response: Response, next: 
   const authToken = request.headers.authorization;
 
   if(!authToken) 
-    return response.status(401).json({error: 'Token não encontrado'});
+    return response.status(401).json({message: 'Token não encontrado'});
 
   const token = authToken.replace('Bearer', '').trim();
 
@@ -22,6 +22,6 @@ export function ensureAuthenticated(request: Request, response: Response, next: 
     return next();
 
   } catch(err) {
-    return response.status(401).json({error: 'Token expirado ou inválido'});
+    return response.status(401).json({message: 'Token expirado ou inválido'});
   }
 }
