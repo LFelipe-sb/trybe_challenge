@@ -10,6 +10,10 @@ import {
   emailRequired,
   passwordLess6,
   passwordRequired,
+  userNotExist,
+  passwordEmpty,
+  emailEmpty,
+  inputAuthenticate,
 } from '../mock';
 
 describe('USER - POST: /user', () => {
@@ -64,6 +68,42 @@ describe('USER - POST: /user', () => {
     const response = await request(app).post('/user').send(inputCreateUser);
     expect(response.statusCode).toBe(409);
     expect(response.body.message).toEqual('Usuário já existe');
+  });
+
+  it('LOGIN AUTHENTICATE - should be able to login application', async () => {
+    const response = await request(app).post('/login').send(inputAuthenticate);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('token');
+  });
+
+  it('LOGIN AUTHENTICATE - should be return statusCode 400 When "email" is empty', async () => {
+    const response = await request(app).post('/login').send(emailEmpty);
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toEqual('"email" is not allowed to be empty');
+  });
+
+  it('LOGIN AUTHENTICATE - should be return statusCode 400 When "email" not send', async () => {
+    const response = await request(app).post('/login').send(emailRequired);
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toEqual('"email" is required');
+  });
+
+  it('LOGIN AUTHENTICATE - should be return statusCode 400 When "password" is empty', async () => {
+    const response = await request(app).post('/login').send(passwordEmpty);
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toEqual('"password" is not allowed to be empty');
+  });
+
+  it('LOGIN AUTHENTICATE - should be return statusCode 400 When "password" not send', async () => {
+    const response = await request(app).post('/login').send(passwordRequired);
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toEqual('"password" is required');
+  });
+
+  it('LOGIN AUTHENTICATE - should be return statusCode 400 When user not exists at database', async () => {
+    const response = await request(app).post('/login').send(userNotExist);
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toEqual('Campos inválidos');
   });
 
   afterAll(async () => {

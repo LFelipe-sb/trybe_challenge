@@ -44,3 +44,23 @@ export const passwordRequired = {
   "email": "rubinho2@gmail.com",
   "image": "http://4.bp.blogspot.com/_YA50adQ-7vQ/S1gfR_6ufpI/AAAAAAAAAAk/1ErJGgRWZDg/S45/brett.png"
 };
+
+export const inputAuthenticate = {
+  "email": "brett@email.com",
+  "password": "123456"
+};
+
+export const emailEmpty = {
+  "email": "",
+  "password": "123456"
+};
+
+export const passwordEmpty = {
+  "email": "lewishamilton@gmail.com.com",
+  "password": ""
+};
+
+export const userNotExist = {
+  "email": "senna@gmail.com",
+  "password": "123456"
+};
