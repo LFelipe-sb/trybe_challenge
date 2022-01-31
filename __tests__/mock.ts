@@ -5,6 +5,13 @@ export const inputCreateUser = {
   "image": "http://4.bp.blogspot.com/_YA50adQ-7vQ/S1gfR_6ufpI/AAAAAAAAAAk/1ErJGgRWZDg/S45/brett.png"
 };
 
+export const inputCreateUser2 = {
+  "displayName": "Luís Felipe Santos",
+  "email": "luisfelipe.sb@email.com",
+  "password": "123456",
+  "image": "http://4.bp.blogspot.com/_YA50adQ-7vQ/S1gfR_6ufpI/AAAAAAAAAAk/1ErJGgRWZDg/S45/brett.png"
+};
+
 export const displayLess8 = {
   "displayName": "Rubens",
   "email": "brett@email.com",
@@ -50,6 +57,11 @@ export const inputAuthenticate = {
   "password": "123456"
 };
 
+export const inputAuthenticate2 = {
+  "email": "luisfelipe.sb@email.com",
+  "password": "123456",
+};
+
 export const emailEmpty = {
   "email": "",
   "password": "123456"
@@ -66,3 +78,16 @@ export const userNotExist = {
 };
 
 export const incorrectUserId = 10;
+
+export const inputCreatePost = {
+  "title": "Latest updates, August 1st",
+  "content": "The whole text for the blog post goes here in this key"
+}
+
+export const createPostWithOutTitle = {
+  "content": "The whole text for the blog post goes here in this key"
+}
+
+export const createPostWithOutContent = {
+  "title": "Latest updates, August 1st"
+}

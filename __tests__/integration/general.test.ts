@@ -15,9 +15,15 @@ import {
   emailEmpty,
   inputAuthenticate,
   incorrectUserId,
+  inputCreatePost,
+  inputCreateUser2,
+  inputAuthenticate2,
+  createPostWithOutTitle,
+  createPostWithOutContent,
 } from '../mock';
 
-let tokenJWT: string;
+let tokenUser1JWT: string;
+let tokenUser2JWT: string;
 let correctUserId: string;
 
 describe('Validation endpoints', () => {
@@ -26,8 +32,14 @@ describe('Validation endpoints', () => {
     const connection = await createConnection();
   });
 
-  it('CREATE USER - should be able to create a new user', async () => {
+  it('CREATE USER - should be able to create a new user 1', async () => {
     const response = await request(app).post('/user').send(inputCreateUser);
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toHaveProperty('token');
+  });
+
+  it('CREATE USER - should be able to create a new user 2', async () => {
+    const response = await request(app).post('/user').send(inputCreateUser2);
     expect(response.statusCode).toBe(201);
     expect(response.body).toHaveProperty('token');
   });
@@ -76,7 +88,14 @@ describe('Validation endpoints', () => {
 
   it('LOGIN AUTHENTICATE - should be able to login application', async () => {
     const response = await request(app).post('/login').send(inputAuthenticate);
-    tokenJWT = response.body.token;
+    tokenUser1JWT = response.body.token;
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('token');
+  });
+
+  it('LOGIN AUTHENTICATE - should be able to login application', async () => {
+    const response = await request(app).post('/login').send(inputAuthenticate2);
+    tokenUser2JWT = response.body.token;
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('token');
   });
@@ -113,7 +132,7 @@ describe('Validation endpoints', () => {
 
   it('LIST USER - should be return statusCode 200 and list user if tokenJWT is valid', async () => {
     const response = await request(app).get('/user').send() 
-      .set('Authorization', tokenJWT);
+      .set('Authorization', tokenUser1JWT);
     expect(response.statusCode).toBe(200);
     response.body.forEach((item: any) => {
       correctUserId = item.id;
@@ -141,7 +160,7 @@ describe('Validation endpoints', () => {
 
   it('LIST SPECIFIC USER - should be return statusCode 200 and a specific user if tokenJWT is valid', async () => {
     const response = await request(app).get(`/user/${correctUserId}`).send()
-      .set('Authorization', tokenJWT);
+      .set('Authorization', tokenUser1JWT);
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('displayName');
     expect(response.body).toHaveProperty('email');
@@ -152,7 +171,7 @@ describe('Validation endpoints', () => {
 
   it('LIST SPECIFIC USER - should be return statusCode 404 if not found specific user and tokenJWT is valid', async () => {
     const response = await request(app).get(`/user/${incorrectUserId}`).send()
-    .set('Authorization', tokenJWT);
+    .set('Authorization', tokenUser1JWT);
     expect(response.statusCode).toBe(404);
     expect(response.body.message).toEqual('Usuário não existe');
   });
@@ -171,9 +190,46 @@ describe('Validation endpoints', () => {
     expect(response.body.message).toEqual('Token expirado ou inválido');
   });
 
+  it('CREATE POST - should be return statusCode 201 and create a post', async () => {
+    const response = await request(app).post('/post').send(inputCreatePost)
+      .set('Authorization', tokenUser1JWT);
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toHaveProperty('content');
+    expect(response.body).toHaveProperty('title');
+    expect(response.body).toHaveProperty('userId');
+  });
+
+  it('CREATE POST - should be return statusCode 400 When "title" not send', async () => {
+    const response = await request(app).post('/post').send(createPostWithOutTitle)
+      .set('Authorization', tokenUser1JWT);
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toEqual('"title" is required');
+  });
+
+  it('CREATE POST - should be return statusCode 400 When "content" not send', async () => {
+    const response = await request(app).post('/post').send(createPostWithOutContent)
+      .set('Authorization', tokenUser1JWT);
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toEqual('"content" is required');
+  });
+
+  it('CREATE POST - should be return statusCode 401 if tokenJWT not exists', async () => {
+    const response = await request(app).get('/user').send()
+      .set('Authorization', '');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token não encontrado');
+  });
+
+  it('CREATE POST - should be return statusCode 401 if tokenJWT is invalid', async () => {
+    const response = await request(app).get('/user').send()
+      .set('Authorization', 'qwerty');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token expirado ou inválido');
+  });
+
   it('DELETE USER - should be return statusCode 204 if user was delete sucessfully', async () => {
     const response = await request(app).delete('/user/me').send()
-      .set('Authorization', tokenJWT);
+      .set('Authorization', tokenUser2JWT);
     expect(response.statusCode).toBe(204);
   });
 
