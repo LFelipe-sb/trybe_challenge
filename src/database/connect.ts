@@ -15,8 +15,8 @@ export default async(): Promise<Connection> => {
       "cli": {
           "migrationsDir": "src/database/migrations"
       }
-    })  
-  }
+    });
+  };
 
   return createConnection();
 };

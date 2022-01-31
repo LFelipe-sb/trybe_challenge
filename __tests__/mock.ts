@@ -64,3 +64,5 @@ export const userNotExist = {
   "email": "senna@gmail.com",
   "password": "123456"
 };
+
+export const incorrectUserId = 10;

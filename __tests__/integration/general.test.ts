@@ -14,9 +14,11 @@ import {
   passwordEmpty,
   emailEmpty,
   inputAuthenticate,
+  incorrectUserId,
 } from '../mock';
 
 let tokenJWT: string;
+let correctUserId: string;
 
 describe('Validation endpoints', () => {
 
@@ -112,9 +114,9 @@ describe('Validation endpoints', () => {
   it('LIST USER - should be return statusCode 200 and list user if tokenJWT is valid', async () => {
     const response = await request(app).get('/user').send() 
       .set('Authorization', tokenJWT);
-
     expect(response.statusCode).toBe(200);
     response.body.forEach((item: any) => {
+      correctUserId = item.id;
       expect(item).toHaveProperty('displayName');
       expect(item).toHaveProperty('email');
       expect(item).toHaveProperty('id');
@@ -132,6 +134,38 @@ describe('Validation endpoints', () => {
 
   it('LIST USER - should be return statusCode 401 if tokenJWT is invalid', async () => {
     const response = await request(app).get('/user').send()
+      .set('Authorization', 'qwerty');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token expirado ou inválido');
+  });
+
+  it('LIST SPECIFIC USER - should be return statusCode 200 and a specific user if tokenJWT is valid', async () => {
+    const response = await request(app).get(`/user/${correctUserId}`).send()
+      .set('Authorization', tokenJWT);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('displayName');
+    expect(response.body).toHaveProperty('email');
+    expect(response.body).toHaveProperty('id');
+    expect(response.body).toHaveProperty('image');
+    expect(response.body).not.toHaveProperty('password');
+  });
+
+  it('LIST SPECIFIC USER - should be return statusCode 404 if not found specific user and tokenJWT is valid', async () => {
+    const response = await request(app).get(`/user/${incorrectUserId}`).send()
+    .set('Authorization', tokenJWT);
+    expect(response.statusCode).toBe(404);
+    expect(response.body.message).toEqual('Usuário não existe');
+  });
+
+  it('LIST SPECIFIC USER - should be return statusCode 401 if tokenJWT not exists', async () => {
+    const response = await request(app).get(`/user/${correctUserId}`).send()
+      .set('Authorization', '');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token não encontrado');
+  });
+
+  it('LIST SPECIFIC USER - should be return statusCode 401 if tokenJWT is invalid', async () => {
+    const response = await request(app).get(`/user/${correctUserId}`).send()
       .set('Authorization', 'qwerty');
     expect(response.statusCode).toBe(401);
     expect(response.body.message).toEqual('Token expirado ou inválido');

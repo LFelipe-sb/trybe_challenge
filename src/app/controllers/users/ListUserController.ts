@@ -17,9 +17,18 @@ export class ListUserController {
         }
       });
 
-      return response.status(200).json(user);
+      if(!id && !user.length || !user.length) {
+        return response.status(404).json({message: 'Usuário não existe'});
+      }
+
+      if(id) {
+        return response.status(200).json(user[0]);
+      } else {
+        return response.status(200).json(user);
+      }
+
     } catch(err) {
-      return response.status(404).json({message: 'Usuário não existe'});
+      return response.status(434).json({message: 'Usuário não existe'});
     }
 
   };
