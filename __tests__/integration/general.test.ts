@@ -171,6 +171,26 @@ describe('Validation endpoints', () => {
     expect(response.body.message).toEqual('Token expirado ou inválido');
   });
 
+  it('DELETE USER - should be return statusCode 204 if user was delete sucessfully', async () => {
+    const response = await request(app).delete('/user/me').send()
+      .set('Authorization', tokenJWT);
+    expect(response.statusCode).toBe(204);
+  });
+
+  it('DELETE USER - should be return statusCode 204 if user was delete sucessfully', async () => {
+    const response = await request(app).del('/user/me').send()
+      .set('Authorization', '');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token não encontrado');
+  });
+
+  it('DELETE USER - should be return statusCode 204 if user was delete sucessfully', async () => {
+    const response = await request(app).del('/user/me').send()
+      .set('Authorization', 'qwerty');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token expirado ou inválido');
+  });
+
   afterAll(async () => {
     const entities = getConnection().entityMetadatas;
 
