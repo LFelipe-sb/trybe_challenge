@@ -425,25 +425,25 @@ describe('Validation endpoints', () => {
     expect(response.body.message).toEqual('Token expirado ou inválido');
   });
 
-  // it('DELETE POST - should be return statusCode 204 if post was delete sucessfully', async () => {
-  //   const response = await request(app).del(`post/${correctPostId}`).send()
-  //     .set('Authorization', tokenUser1JWT);
-  //   expect(response.statusCode).toBe(204);
-  // });
+  it('DELETE POST - should be return statusCode 204 if post was delete sucessfully', async () => {
+    const response = await request(app).del(`/post/${correctPostId}`).send()
+      .set('Authorization', tokenUser1JWT);
+    expect(response.statusCode).toBe(204);
+  });
 
-  // it('DELETE POST - should be return statusCode 401 if tokenJWT not exists', async () => {
-  //   const response = await request(app).del(`post/${correctPostId}`).send()
-  //     .set('Authorization', '');
-  //   expect(response.statusCode).toBe(401);
-  //   expect(response.body.message).toEqual('Token não encontrado');
-  // });
+  it('DELETE POST - should be return statusCode 401 if tokenJWT not exists', async () => {
+    const response = await request(app).del(`/post/${correctPostId}`).send()
+      .set('Authorization', '');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token não encontrado');
+  });
 
-  // it('DELETE POST - should be return statusCode 401 if tokenJWT is invalid', async () => {
-  //   const response = await request(app).del(`post/${correctPostId}`).send()
-  //     .set('Authorization', 'qwerty');
-  //   expect(response.statusCode).toBe(401);
-  //   expect(response.body.message).toEqual('Token expirado ou inválido');
-  // });
+  it('DELETE POST - should be return statusCode 401 if tokenJWT is invalid', async () => {
+    const response = await request(app).del(`/post/${correctPostId}`).send()
+      .set('Authorization', 'qwerty');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token expirado ou inválido');
+  });
 
   it('DELETE USER - should be return statusCode 204 if user was delete sucessfully', async () => {
     const response = await request(app).del('/user/me').send()
@@ -470,7 +470,7 @@ describe('Validation endpoints', () => {
 
     for (const entity of entities) {
       const repository = getConnection().getRepository(entity.name); // Get repository
-      // await repository.clear(); // Clear each entity table's content
+      await repository.clear(); // Clear each entity table's content
     };    
   });
 });
