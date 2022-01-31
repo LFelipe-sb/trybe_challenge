@@ -20,11 +20,15 @@ import {
   inputAuthenticate2,
   createPostWithOutTitle,
   createPostWithOutContent,
+  incorrectPostId,
+  updatePost,
+  searchTerm,
 } from '../mock';
 
 let tokenUser1JWT: string;
 let tokenUser2JWT: string;
 let correctUserId: string;
+let correctPostId: string;
 
 describe('Validation endpoints', () => {
 
@@ -227,20 +231,168 @@ describe('Validation endpoints', () => {
     expect(response.body.message).toEqual('Token expirado ou inválido');
   });
 
+  it('LIST POST - should be return statusCode 200 and list user if tokenJWT is valid', async () => {
+    const response = await request(app).get('/post').send()
+      .set('Authorization', tokenUser1JWT);
+      expect(response.statusCode).toBe(200);
+      response.body.forEach((item: any) => {
+        correctPostId = item.id
+        expect(item).toHaveProperty('id');
+        expect(item).toHaveProperty('title');
+        expect(item).toHaveProperty('content');
+        expect(item).toHaveProperty('updated');
+        expect(item).toHaveProperty('published');
+        expect(item.user).toHaveProperty('id');
+        expect(item.user).toHaveProperty('displayName');
+        expect(item.user).toHaveProperty('email');
+        expect(item.user).toHaveProperty('image');
+      });
+  });
+
+  it('LIST POST - should be return statusCode 401 if tokenJWT not exists', async () => {
+    const response = await request(app).get('/post').send()
+      .set('Authorization', '');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token não encontrado');
+  });
+
+  it('LIST POST - should be return statusCode 401 if tokenJWT is invalid', async () => {
+    const response = await request(app).get('/post').send()
+      .set('Authorization', 'qwerty');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token expirado ou inválido');
+  });
+
+  it('LIST SPECIFIC POST - should be return statusCode 200 and a specific post if tokenJWT is valid', async () => {
+    const response = await request(app).get(`/post/${correctPostId}`).send()
+      .set('Authorization', tokenUser1JWT);
+    expect(response.statusCode).toBe(200);
+    expect(response.body[0]).toHaveProperty('id');
+    expect(response.body[0]).toHaveProperty('title');
+    expect(response.body[0]).toHaveProperty('content');
+    expect(response.body[0]).toHaveProperty('updated');
+    expect(response.body[0]).toHaveProperty('published');
+    expect(response.body[0].user).toHaveProperty('id');
+    expect(response.body[0].user).toHaveProperty('displayName');
+    expect(response.body[0].user).toHaveProperty('email');
+    expect(response.body[0].user).toHaveProperty('image');
+  });
+
+  it('LIST SPECIFIC POST - should be return statusCode 401 if tokenJWT not exists', async () => {
+    const response = await request(app).get(`/post/${correctPostId}`).send()
+      .set('Authorization', '');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token não encontrado');
+  });
+
+  it('LIST SPECIFIC POST - should be return statusCode 401 if tokenJWT is invalid', async () => {
+    const response = await request(app).get(`/post/${correctPostId}`).send()
+      .set('Authorization', 'qwerty');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token expirado ou inválido');
+  });
+
+  it('LIST SPECIFIC POST - should be return statusCode 404 if not found specific post and tokenJWT is valid', async () => {
+    const response = await request(app).get(`/post/${incorrectPostId}`).send()
+    .set('Authorization', tokenUser1JWT);
+    expect(response.statusCode).toBe(404);
+    expect(response.body.message).toEqual('Post não existe');
+  });
+
+  it('UPDATE POST - should be return statusCode 200 if update sucessfully', async () => {
+    const response = await request(app).put(`/post/${correctPostId}`).send(updatePost)
+    .set('Authorization', tokenUser1JWT);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('content');
+    expect(response.body).toHaveProperty('title');
+    expect(response.body).toHaveProperty('userId');
+  });
+
+  it('UPDATE POST - should be return statusCode 401 if the user is not the owner of the post', async () => {
+    const response = await request(app).put(`/post/${correctPostId}`).send(updatePost)
+    .set('Authorization', tokenUser2JWT);
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Usuário não autorizado');
+  });
+
+  it('UPDATE POST - should be return statusCode 401 if tokenJWT not exists', async () => {
+    const response = await request(app).put(`/post/${correctPostId}`).send()
+      .set('Authorization', '');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token não encontrado');
+  });
+
+  it('UPDATE POST - should be return statusCode 401 if tokenJWT is invalid', async () => {
+    const response = await request(app).put(`/post/${correctPostId}`).send()
+      .set('Authorization', 'qwerty');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token expirado ou inválido');
+  });
+
+  it('UPDATE POST - should be return statusCode 400 When "title" not send', async () => {
+    const response = await request(app).put(`/post/${correctPostId}`).send(createPostWithOutTitle)
+      .set('Authorization', tokenUser1JWT);
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toEqual('"title" is required');
+  });
+
+  it('UPDATE POST - should be return statusCode 400 When "content" not send', async () => {
+    const response = await request(app).put(`/post/${correctPostId}`).send(createPostWithOutContent)
+      .set('Authorization', tokenUser1JWT);
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toEqual('"content" is required');
+  });
+
+  it('SEARCH POST - should be return statusCode 200 When search find the parameters', async () => {
+    const response = await request(app).get(`/post/search?q=${searchTerm}`).send()
+      .set('Authorization', tokenUser1JWT);
+    expect(response.statusCode).toBe(200);
+    response.body.forEach((item: any) => {
+      correctPostId = item.id
+      expect(item).toHaveProperty('id');
+      expect(item).toHaveProperty('title');
+      expect(item).toHaveProperty('content');
+      expect(item).toHaveProperty('updated');
+      expect(item).toHaveProperty('published');
+    });
+  });
+
+
+  // it('DELETE POST - should be return statusCode 204 if post was delete sucessfully', async () => {
+  //   const response = await request(app).del(`post/f2860752-615e-4427-afff-64460d794585
+  //   `).send()
+  //     .set('Authorization', tokenUser1JWT);
+  //   expect(response.statusCode).toBe(204);
+  // });
+
+  // it('DELETE POST - should be return statusCode 401 if tokenJWT not exists', async () => {
+  //   const response = await request(app).del(`post/${correctPostId}`).send()
+  //     .set('Authorization', '');
+  //   expect(response.statusCode).toBe(401);
+  //   expect(response.body.message).toEqual('Token não encontrado');
+  // });
+
+  // it('DELETE POST - should be return statusCode 401 if tokenJWT is invalid', async () => {
+  //   const response = await request(app).del(`post/${correctPostId}`).send()
+  //     .set('Authorization', 'qwerty');
+  //   expect(response.statusCode).toBe(401);
+  //   expect(response.body.message).toEqual('Token expirado ou inválido');
+  // });
+
   it('DELETE USER - should be return statusCode 204 if user was delete sucessfully', async () => {
-    const response = await request(app).delete('/user/me').send()
+    const response = await request(app).del('/user/me').send()
       .set('Authorization', tokenUser2JWT);
     expect(response.statusCode).toBe(204);
   });
 
-  it('DELETE USER - should be return statusCode 204 if user was delete sucessfully', async () => {
+  it('DELETE USER - should be return statusCode 401 if tokenJWT not exists', async () => {
     const response = await request(app).del('/user/me').send()
       .set('Authorization', '');
     expect(response.statusCode).toBe(401);
     expect(response.body.message).toEqual('Token não encontrado');
   });
 
-  it('DELETE USER - should be return statusCode 204 if user was delete sucessfully', async () => {
+  it('DELETE USER - should be return statusCode 204 if tokenJWT is invalid', async () => {
     const response = await request(app).del('/user/me').send()
       .set('Authorization', 'qwerty');
     expect(response.statusCode).toBe(401);

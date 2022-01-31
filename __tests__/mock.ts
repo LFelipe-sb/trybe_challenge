@@ -91,3 +91,12 @@ export const createPostWithOutTitle = {
 export const createPostWithOutContent = {
   "title": "Latest updates, August 1st"
 }
+
+export const incorrectPostId = 10;
+
+export const updatePost = {
+  "title": "update do outro",
+  "content": "content"
+}
+
+export const searchTerm = 'updates';
