@@ -99,4 +99,6 @@ export const updatePost = {
   "content": "content"
 }
 
-export const searchTerm = 'updates';
+export const searchTitle = 'update';
+
+export const searchContent = 'update';

@@ -22,7 +22,8 @@ import {
   createPostWithOutContent,
   incorrectPostId,
   updatePost,
-  searchTerm,
+  searchTitle,
+  searchContent,
 } from '../mock';
 
 let tokenUser1JWT: string;
@@ -343,24 +344,89 @@ describe('Validation endpoints', () => {
     expect(response.body.message).toEqual('"content" is required');
   });
 
-  it('SEARCH POST - should be return statusCode 200 When search find the parameters', async () => {
-    const response = await request(app).get(`/post/search?q=${searchTerm}`).send()
+  it('SEARCH POST - should be return statusCode 200 When search find the parameters on "title"', async () => {
+    const response = await request(app).get(`/post/search?q=${searchTitle}`).send()
       .set('Authorization', tokenUser1JWT);
     expect(response.statusCode).toBe(200);
-    response.body.forEach((item: any) => {
-      correctPostId = item.id
-      expect(item).toHaveProperty('id');
-      expect(item).toHaveProperty('title');
-      expect(item).toHaveProperty('content');
-      expect(item).toHaveProperty('updated');
-      expect(item).toHaveProperty('published');
-    });
+    if(response.body.length > 1) {
+      response.body.forEach((item: any) => {
+        correctPostId = item.id
+        expect(item).toHaveProperty('id');
+        expect(item).toHaveProperty('title');
+        expect(item).toHaveProperty('content');
+        expect(item).toHaveProperty('updated');
+        expect(item).toHaveProperty('published');
+        expect(item.user).toHaveProperty('id');
+        expect(item.user).toHaveProperty('displayName');
+        expect(item.user).toHaveProperty('email');
+        expect(item.user).toHaveProperty('image');
+      });
+    }
   });
 
+  it('SEARCH POST - should be return statusCode 200 When search find the parameters on "content"', async () => {
+    const response = await request(app).get(`/post/search?q=${searchContent}`).send()
+      .set('Authorization', tokenUser1JWT);
+    expect(response.statusCode).toBe(200);
+    if(response.body.length > 1) {
+      response.body.forEach((item: any) => {
+        correctPostId = item.id
+        expect(item).toHaveProperty('id');
+        expect(item).toHaveProperty('title');
+        expect(item).toHaveProperty('content');
+        expect(item).toHaveProperty('updated');
+        expect(item).toHaveProperty('published');
+        expect(item.user).toHaveProperty('id');
+        expect(item.user).toHaveProperty('displayName');
+        expect(item.user).toHaveProperty('email');
+        expect(item.user).toHaveProperty('image');
+      });
+    }
+  });
+
+  it('SEARCH POST - should be return statusCode 200 When the parameters searched is empty', async () => {
+    const response = await request(app).get(`/post/search?q=`).send()
+      .set('Authorization', tokenUser1JWT);
+    expect(response.statusCode).toBe(200);
+    if(response.body.length > 1) {
+      response.body.forEach((item: any) => {
+        correctPostId = item.id
+        expect(item).toHaveProperty('id');
+        expect(item).toHaveProperty('title');
+        expect(item).toHaveProperty('content');
+        expect(item).toHaveProperty('updated');
+        expect(item).toHaveProperty('published');
+        expect(item.user).toHaveProperty('id');
+        expect(item.user).toHaveProperty('displayName');
+        expect(item.user).toHaveProperty('email');
+        expect(item.user).toHaveProperty('image');
+      });
+    }
+  });
+
+  it('SEARCH POST - should be return statusCode 200 When not found blogpost and return a empty list', async () => {
+    const response = await request(app).get(`/post/search?q=dfdfge`).send()
+      .set('Authorization', tokenUser1JWT);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveLength(0)
+  });
+
+  it('SEARCH POST - should be return statusCode 401 if tokenJWT not exists', async () => {
+    const response = await request(app).get(`/post/search?q=${searchContent}`).send()
+      .set('Authorization', '');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token não encontrado');
+  });
+
+  it('SEARCH POST - should be return statusCode 401 if tokenJWT is invalid', async () => {
+    const response = await request(app).get(`/post/search?q=${searchContent}`).send()
+      .set('Authorization', 'qwerty');
+    expect(response.statusCode).toBe(401);
+    expect(response.body.message).toEqual('Token expirado ou inválido');
+  });
 
   // it('DELETE POST - should be return statusCode 204 if post was delete sucessfully', async () => {
-  //   const response = await request(app).del(`post/f2860752-615e-4427-afff-64460d794585
-  //   `).send()
+  //   const response = await request(app).del(`post/${correctPostId}`).send()
   //     .set('Authorization', tokenUser1JWT);
   //   expect(response.statusCode).toBe(204);
   // });
@@ -404,7 +470,7 @@ describe('Validation endpoints', () => {
 
     for (const entity of entities) {
       const repository = getConnection().getRepository(entity.name); // Get repository
-      await repository.clear(); // Clear each entity table's content
+      // await repository.clear(); // Clear each entity table's content
     };    
   });
 });

@@ -9,7 +9,8 @@ export class SearchPostService {
       where: [
         {title: Like(`%${q}%`)},
         {content: Like(`%${q}%`)}
-      ]
+      ],
+      relations: ['user'],
     });
     
     return blogPosts;

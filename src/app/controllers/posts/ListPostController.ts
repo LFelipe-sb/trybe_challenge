@@ -15,6 +15,10 @@ export class ListPostController {
         delete result[index].user.password;
       });
 
+      if(!result.length) {
+        return response.status(404).json({message: 'Post não existe'});
+      }
+
       return response.status(200).json(result);
     } catch(err) {
       return response.status(404).json({message: 'Post não existe'});

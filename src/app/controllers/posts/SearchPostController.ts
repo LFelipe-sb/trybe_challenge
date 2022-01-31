@@ -6,7 +6,12 @@ export class SearchPostController {
     const q  = request.query.q?.toString() || '';
 
     const service = new SearchPostService();
-    const result = await service.execute(q);
+    const result: any = await service.execute(q);
+
+    result.forEach((item: any) => {
+      delete item.userId;
+      delete item.user.password;
+    });
 
     return response.json(result);
   }
