@@ -1,0 +1,635 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Esta é uma API desenvolvida para simular o gerenciamento de um blog. Sua propósta é permitir o acesso a funcionalidades simples como gestão de usuários e administração de postagens. \nO projeto também é um desafio lançado pela Trybe como desafio técnico durante o processo seletivo a vaga de desenvolvedor. \nPara mais detalhes da aplicação, acesse o repositório no Github, disponível em: [https://github.com/LFelipe-sb/trybe_challenge](https://github.com/LFelipe-sb/trybe_challenge). \nComo plus no desenvolvimento do desafio, esta aplicação também deve seu deploy realizado e está disponível para ser consultada e consumida no Heroku. Todas as informações nela contidas, são apenas para fins de desenvolvimento do desafio. \nPara acessar a aplicação, acesse: [https://desafio-trybe.herokuapp.com](https://desafio-trybe.herokuapp.com)",
+    "version": "1.0.0",
+    "title": "API de Blogs - Be Trybe ❤",
+    "contact": {
+      "email": "luisfelipe.sb@outlook.com",
+      "url": "https://www.linkedin.com/in/lfelipe-sb/"
+    },
+    "license": {
+      "name": "MIT License",
+      "url": "https://opensource.org/licenses"
+    }
+  },
+  "host": "desafio-trybe.herokuapp.com",
+  "tags": [
+    {
+      "name": "User",
+      "description": "Cadastro, listagem e exclusão de usuários"
+    },
+    {
+      "name": "Login",
+      "description": "Acesso ao sistema e recebimento de autorização"
+    },
+    {
+      "name": "Post",
+      "description": "Cadastro, atualização, listagem, pesquisas e exclusão das postagens no blog"
+    },
+    {
+      "name": "Search",
+      "description": "Pesquisas por termos no \"title\" ou \"content\" das postagens no blog"
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": [
+          "Login"
+        ],
+        "summary": "Autenticação de usuários no sistema",
+        "description": "",
+        "operationId": "authenticate",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Informar email e senha para autenticação",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Login"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "api_key"
+          },
+          "400": {
+            "description": "Dados informados inválidos"
+          }
+        },
+        "security": [
+          {
+            "Bearer_token": [
+              "api_key"
+            ]
+          }
+        ]
+      }        
+    },
+    "/user": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Cadastro de usuáios na aplicação",
+        "description": "Para validar esta operação, deverá ser retornado um token JWT",
+        "operationId": "createUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "List of user object",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Dados informados inválidos"
+          },
+          "409": {
+            "description": "Usuário já cadastrado"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Deve retornar todos os Usuários cadastrados",
+        "description": "Ação pode ser realizada apenas por usuários autenticados",
+        "operationId": "getAllUsers",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Realizado com Sucesso",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "Token não encontrado, expirado ou inválido"
+          }
+        },
+        "security": [
+          {
+            "Bearer_token": [
+              "api_key"
+            ]
+          }
+        ]
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Deve retornar usuário pelo id",
+        "description": "Ação pode ser realizada apenas por usuários autenticados",
+        "operationId": "getUserById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Informar o id do usuário a ser listado. ",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Realizado com Sucesso",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          },
+          "401": {
+            "description": "Token não encontrado, expirado ou inválido"
+          },
+          "404": {
+            "description": "Usuário não existe"
+          }
+        },
+        "security": [
+          {
+            "Bearer_token": [
+              "api_key"
+            ]
+          }
+        ]
+      }
+    },
+    "/user/me": {
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Exclui usuário",
+        "description": "Ação pode ser realizada apenas por usuários autenticados e excluir seu próprio usuário",
+        "operationId": "deleteUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "description": "Id do usuário será capturado pelo token de autenticação. ",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
+          },
+          "401": {
+            "description": "Token não encontrado, expirado ou inválido"
+          }
+        },
+        "security": [
+          {
+            "Bearer_token": [
+              "api_key"
+            ]
+          }
+        ]
+      }
+    },
+    "/post": {
+      "post": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "Cadastro de postagens na aplicação",
+        "description": "Ação pode ser realizada apenas por usuários autenticados",
+        "operationId": "createPost",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "List of post object",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Post"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Dados informados inválidos"
+          },
+          "401": {
+            "description": "Token não encontrado, expirado ou inválido"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "Deve retornar todas as postagens cadastrados",
+        "description": "Ação pode ser realizada apenas por usuários autenticados",
+        "operationId": "getAllPost",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Realizado com Sucesso",
+            "schema": {
+              "$ref": "#/definitions/PostResponse"
+            }
+          },
+          "401": {
+            "description": "Token não encontrado, expirado ou inválido"
+          }
+        },
+        "security": [
+          {
+            "Bearer_token": [
+              "api_key"
+            ]
+          }
+        ]
+      }
+    },
+    "/post/{id}": {
+      "get": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "Deve retornar postagem pelo id",
+        "description": "Ação pode ser realizada apenas por usuários autenticados",
+        "operationId": "getPostById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Informar o id da postagem a ser listado. ",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Realizado com Sucesso",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          },
+          "401": {
+            "description": "Token não encontrado, expirado ou inválido"
+          },
+          "404": {
+            "description": "Post não existe"
+          }
+        },
+        "security": [
+          {
+            "Bearer_token": [
+              "api_key"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "Atualização de postagem",
+        "description": "Ação pode ser realizada apenas por usuários autenticados e atualizar sua própria postagem baseada no id informado",
+        "operationId": "updatePost",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "description": "Id da postagem será capturado pelo token de autenticação. ",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Realizado com Sucesso"
+          },
+          "400": {
+            "description": "Dados informados inválidos"
+          },
+          "401": {
+            "description": "Token não encontrado, expirado ou inválido não autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer_token": [
+              "api_key"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "Exclui postagem",
+        "description": "Ação pode ser realizada apenas por usuários autenticados e excluir sua própria postagem baseada no id informado",
+        "operationId": "deletePost",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "description": "Id da postagem será capturado pelo token de autenticação. ",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
+          },
+          "401": {
+            "description": "Token não encontrado, expirado ou inválido"
+          },
+          "404": {
+            "description": "Post não existe"
+          }
+        },
+        "security": [
+          {
+            "Bearer_token": [
+              "api_key"
+            ]
+          }
+        ]
+      }
+    },
+    "/search": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Deve retornar lista de postagens baseada nos termos informados",
+        "description": "",
+        "operationId": "searchPost",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Termos a serem pesquisados nas postagens",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Search"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Realizado com Sucesso"
+
+          },
+          "401": {
+            "description": "Token não encontrado, expirado ou inválido"
+          }
+        },
+        "security": [
+          {
+            "Bearer_token": [
+              "api_key"
+            ]
+          }
+        ]
+      }        
+    }
+  },
+  "securityDefinitions": {
+    "authenticate": {
+      "type": "oauth2",
+      "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
+      "flow": "implicit",
+      "scopes": {
+        "write:post": "modify pots in your account",
+        "read:post": "read your pots",
+        "write:user": "delete your user"
+      }
+    },
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "required": [
+        "displayName",
+        "email",
+        "password",
+        "image"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "Login": {
+      "type": "object",
+      "required": [
+        "email",
+        "password"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Login"
+      }
+    },
+    "Search": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Search"
+      }
+    },
+    "UserResponse": {
+      "type": "object",
+      "required": [
+        "id",
+        "displayName",
+        "email",
+        "image"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "UserResponse"
+      }
+    },
+    "Post": {
+      "type": "object",
+      "required": [
+        "title",
+        "content"
+      ],
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Post"
+      }
+    },
+    "PostResponse": {
+      "type": "object",
+      "required": [
+        "title",
+        "content"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "published": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/UserResponse"
+        }
+      },
+      "xml": {
+        "name": "PostResponse"
+      }
+    },
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}

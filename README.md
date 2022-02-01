@@ -10,6 +10,19 @@
 - [Luis Felipe Santos](https://github.com/LFelipe-sb)
 
 
+## 📄 Descrição
+
+Esta é uma API desenvolvida para simular o gerenciamento de um blog. Sua propósta é permitir o acesso a funcionalidades simples como gestão de usuários e administração de postagens.
+O projeto também é um desafio lançado pela Trybe como desafio técnico durante o processo seletivo a vaga de desenvolvedor.
+Para mais detalhes da aplicação, acesse este repositório.
+Como plus no desenvolvimento do desafio, esta aplicação também deve seu deploy realizado e está disponível para ser consultada e consumida no Heroku. Todas as informações nela contidas, são apenas para fins de desenvolvimento do desafio.
+Para acessar a aplicação, acesse: [https://desafio-trybe.herokuapp.com](https://desafio-trybe.herokuapp.com)
+
+
+## 🔔 Documentação 
+Documentação disponível através da ferramenta Swagger: [https://desafio-trybe.herokuapp.com/docs](https://desafio-trybe.herokuapp.com/docs)
+
+
 ## 🎯 Desafio: Arquiteturar e desenvolver uma API de um CRUD de posts de blog. Desenvolver alguns endpoints (seguindo os principios do REST) que estarão conectados ao banco de dados.
 
 ### :round_pushpin:🔚 Back-end
