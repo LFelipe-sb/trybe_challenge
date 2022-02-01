@@ -43,15 +43,18 @@ var DeletePostController = /** @class */ (function () {
     }
     DeletePostController.prototype.handle = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, userId, service, result;
+            var id, userId, service, result, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         id = request.params.id;
                         userId = request.id;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
                         service = new DeletePostService_1.DeletePostService();
                         return [4 /*yield*/, service.execute(id, userId)];
-                    case 1:
+                    case 2:
                         result = _a.sent();
                         if (result instanceof Error) {
                             result.message.includes('Usuário') ?
@@ -59,6 +62,10 @@ var DeletePostController = /** @class */ (function () {
                                 response.status(404).json({ message: result.message });
                         }
                         return [2 /*return*/, response.status(204).end()];
+                    case 3:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, response.status(404).json({ "message": "Post não existe" })];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
