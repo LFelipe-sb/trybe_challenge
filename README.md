@@ -23,6 +23,15 @@ Para acessar a aplicação, acesse: [https://desafio-trybe.herokuapp.com](https:
 Documentação disponível através da ferramenta Swagger: [https://desafio-trybe.herokuapp.com/docs](https://desafio-trybe.herokuapp.com/docs)
 
 
+## 💻 Tecnologias utilizadas 
+Banco de dados: <b>Postgresql</b> (Em produção e ambiente de desenvolvimento)  |  <b>Sqlite</b> (Ambiente de testes) <br>
+Linguagem: <b>Typescript</b>  |  <b>Framework Express</b> <br>
+ORM: <b>TyoeORM</b> <br>
+Testes: <b>Jest com Supertest</b> <br>
+Deploy: <b>Heroku</b> <br>
+Documentação: <b>Swagger</b> <br>
+
+
 ## 🎯 Desafio: Arquiteturar e desenvolver uma API de um CRUD de posts de blog. Desenvolver alguns endpoints (seguindo os principios do REST) que estarão conectados ao banco de dados.
 
 ### :round_pushpin:🔚 Back-end
